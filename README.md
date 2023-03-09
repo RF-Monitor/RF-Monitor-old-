@@ -1,6 +1,6 @@
 <img alt="Logo" src="https://avatars.githubusercontent.com/u/127377964?s=200&v=4" width="128px" height="128px" align="left"/>
 
- # RF-Monitor 台灣實時地震觀測
+ # RF-Monitor 台灣即時地震觀測
 
 
 ----
@@ -14,11 +14,11 @@
 台灣/日本地震速報 地震來襲即時警報 永遠不再當國家級邊緣人<br>
 RF-sensor震度計 即時搖晃資訊，縮小預警盲區<br>
 天氣警特報 颱風、天氣警訊即時資訊<br>
-### 下载链接<br>
+### 下載鏈接<br>
 
-官网: (http://rexisstudio.tplinkdns.com:8080)<br>
-Google 云端下载站点：(https://drive.google.com/drive/folders/1gb2OpmcMnaiuo67LXT5GhVwsVLFxjVJD)<br>
-Github下载站点：（https://github.com/RF-Monitor/RF-Monitor/releases/tag/main ）
+官網: (http://rexisstudio.tplinkdns.com:8080)<br>
+Google雲端載點：(https://drive.google.com/drive/folders/1gb2OpmcMnaiuo67LXT5GhVwsVLFxjVJD)<br>
+Github載點：（https://github.com/RF-Monitor/RF-Monitor/releases/tag/main ）
 
 ### 加入我們  
  Discord (https://discord.gg/Gqt3WhrQpd)
