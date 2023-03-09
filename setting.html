@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="zh" style="height:100%">
+<head>
+	<meta charset="utf-8" name="viewport" comtent="widch=device-widch,initial-scale=1.0" />
+	<title>RF-Monitor設定</title>
+	<script src="js/jquery.js"></script>
+	<script>if (typeof module === 'object') {window.jQuery = window.$ = module.exports;};</script>
+	<link href="css/bootstrap.min.css" rel="stylesheet" />
+	<link href="css/leaflet.css" rel="stylesheet" />
+	<script src="js/bootstrap.min.js"></script>
+	<style>
+		ul.nav-tabs li.nav-item a.nav-link {
+  			color: #FFF;
+		}
+		ul.nav-tabs li.nav-item a.active  {
+  			color: #FFF;
+			background-color: dodgerblue;
+		}
+		.header{
+			height:60px;
+			margin-top:10px;
+			margin-bottom: 50px;
+		}
+		.content{
+			color:#FFF;
+			height: calc(100% - 231px);
+			overflow-y:auto;
+		}
+		.center {
+ 			display: block;
+  			margin-left: auto;
+  			margin-right: auto;
+  			width: 50%;
+		}
+		hr{
+  			border-top: 1px solid white;
+		}
+		.maincheckbox {
+			width: 20px; 
+			height: 20px;
+		}
+		.smallcheckbox {
+			width: 15px; 
+			height: 15px;
+		}
+		.bottom{
+			display:flex;
+			flex-direction: row;
+			flex-wrap: nowrap;
+			justify-content:right;
+			height:50px;
+		}
+		.ganhua{
+			position: absolute;
+			left:3px;
+			bottom:3px;
+			color:white;
+		}
+	</style>
+</head>
+<body style="background-color:#2B2B2B;color: white;height: 100%;">
+	<h6 style="color: #2B2B2B;text-decoration:line-through">偽娘萬歲</h6>
+	<div class="container header">
+		<ul class="nav nav-tabs">
+			<li class="nav-item"><a href="#ew" data-toggle="tab" class="nav-link active"><p>即時資訊</p></a></li>
+			<li class="nav-item"><a href="#sounds" data-toggle="tab" class="nav-link"><p>音效</p></a></li>
+			<li class="nav-item"><a href="#others" data-toggle="tab" class="nav-link"><p>其他</p></a></li>
+			<li class="nav-item"><a href="#about" data-toggle="tab" class="nav-link"><p>關於RF-monitor</p></a></li>
+		</ul>
+	</div>
+	
+	<div class="tab-content content">
+		<!--即時資訊-->
+		
+		<div class="container tab-pane active" id="ew">
+			<!--<img src="images/setting_left_mid.png" class="center">-->
+			<div style="margin-left: 50px;">
+
+					<h4>所在地</h4>
+					<label for="lat">
+						<p style='font-size: 22px;'>緯度</p>
+					</label>
+					<input type="text" id="lat">
+					<label for="lon">
+						<p style='font-size: 22px;'>經度</p>
+					</label>
+					<input type="text" id="lon">
+					<br>
+					
+					<input class="maincheckbox" type="checkbox" value="" id="enable_window_popup" name="enable_window_popup">
+					<label for="enable_window_popup">
+						<p style='font-size: 22px;'>有地震速報時彈出視窗</p>
+					</label>
+					<br>
+					<input class="maincheckbox" type="checkbox" value="" id="enable_notification" name="enable_notification">
+					<label for="enable_notification">
+						<p style='font-size: 22px;'>有地震速報時顯示通知</p>
+					</label>
+					<br>
+					<label for="opacity">
+						<p style='font-size: 22px;'>即時資訊列表透明度</p>
+					</label>
+					<input type="number" value="" id="opacity" name="opacity" style="width:50px" min="0" max="1" step="0.1">
+					<hr/>
+					<h4>即時地震資訊</h4>
+					<input class="maincheckbox" type="checkbox" value="" id="enable_tw_eew" name="enable_tw_eew">
+					<label for="enable_tw_eew">
+						<p style='font-size: 22px;'>顯示台灣地震速報</p>
+					</label>
+					<br>
+					<input class="maincheckbox" type="checkbox" value="" id="enable_jp_eew" name="enable_jp_eew">
+					<label for="enable_jp_eew">
+						<p style='font-size: 22px;'>顯示日本地震速報</p>
+					</label>
+					<br>
+					<input class="maincheckbox" type="checkbox" value="" id="enable_PGA" name="enable_PGA">
+					<label for="enable_PGA">
+						<p style='font-size: 22px;'>顯示RF-sensor即時測站</p>
+					</label>
+					<br>
+					<input class="maincheckbox" type="checkbox" value="" id="PGA_warn_only" name="PGA_warn_only">
+					<label for="PGA_warn_only">
+						<p style='font-size: 22px;'>僅在發布警報時顯示震度</p>
+					</label>
+					<br>
+					<input class="maincheckbox" type="checkbox" value="" id="enable_tsunami" name="enable_tsunami">
+					<label for="enable_tsunami">
+						<p style='font-size: 22px;'>顯示海嘯警訊、警報</p>
+					</label>
+					<br>
+					<input class="maincheckbox" type="checkbox" value="" id="enable_warningArea" name="enable_warningArea">
+					<label for="enable_warningArea">
+						<p style='font-size: 22px;'> 當收到RF測站警報時，顯示警報範圍</p>
+					</label>
+					<br>
+					<input style="display: none;" class="maincheckbox" type="checkbox" value="" id="enable_PGA_TREM" name="enable_PGA_TREM" disabled>
+					<label  style='margin-bottom: 0px;' for="enable_PGA_TREM">
+						<p style='display: none;font-size: 22px;margin-bottom: 1px;'>顯示TREM即時測站</p>
+					</label>
+					<br>
+					<div style="display: none;">
+						<h6>TREM測站僅在震度大於3時顯示震度</h6>
+						<label for="station_select">RF-sensor即時測站顯示模式</label>
+						<select style="display: none;" name="station_select" id="station_select">
+							<option value="shindo" id="station_select_shindo">震度</option>
+							<option value="pga" id="station_select_pga">原始加速度</option>
+						</select>
+						<br>
+					</div>
+					<hr/>
+					<h4>天氣警特報</h4>
+					<input class="maincheckbox" type="checkbox" value="" id="enable_weather" name="enableㄧ˙_weather">
+					<label for="enable_weather">
+						<p style='font-size: 22px;'>顯示天氣警特報</p>
+					</label>
+					<br>
+					<input class="maincheckbox" type="checkbox" value="" id="enable_ty" name="enable_ty">
+					<label for="enable_ty">
+						<p style='font-size: 22px;'>顯示颱風情報</p>
+					</label>
+					<br>
+					<input class="maincheckbox" type="checkbox" value="" id="enable_ty_analysis" name="enable_ty_analysis">
+					<label for="enable_ty_analysis">
+						<p style='font-size: 22px;'>顯示颱風過去時間的暴風範圍</p>
+					</label>
+					<br>
+					<h6>如果畫面因颱風路徑而過於雜亂，可考慮關閉此選項</h6>
+					<hr/>
+					<h4>地震速報模擬</h4>
+					<label for="EEWsim_magnitude">
+						<p style='font-size: 22px;'>規模</p>
+					</label>
+					<input type="number" value="" id="EEWsim_magnitude" name="EEWsim_magnitude" style="width:50px" min="0.1" max="10" step="0.1">
+					<br>
+					<label for="EEWsim_depth">
+						<p style='font-size: 22px;'>深度</p>
+					</label>
+					<input type="number" value="" id="EEWsim_depth" name="EEWsim_depth" style="width:50px" min="0" max="1000" step="1">
+					<br>
+					<label for="EEWsim_lat">
+						<p style='font-size: 22px;'>震央緯度</p>
+					</label>
+					<input type="number" value="" id="EEWsim_lat" name="EEWsim_lat" style="width:50px" min="20" max="55" step="0.01">
+					<br>
+					<label for="EEWsim_lon">
+						<p style='font-size: 22px;'>震央經度</p>
+					</label>
+					<input type="number" value="" id="EEWsim_lon" name="EEWsim_lon" style="width:50px" min="115" max="160" step="0.01">
+					<br>
+					<label for="EEWsim_y">
+						<p style='font-size: 22px;'>時間</p>
+					</label>
+					<input type="number" value="" id="EEWsim_y" name="EEWsim_y" style="width:80px" min="2000" max="3000" step="1">
+					<label for="EEWsim_m">
+						<p style='font-size: 22px;'>年</p>
+					</label>
+					<input type="number" value="" id="EEWsim_m" name="EEWsim_m" style="width:50px" min="1" max="12" step="1">
+					<label for="EEWsim_d">
+						<p style='font-size: 22px;'>月</p>
+					</label>
+					<input type="number" value="" id="EEWsim_d" name="EEWsim_d" style="width:50px" min="1" max="31" step="1">
+					<label for="EEWsim_H">
+						<p style='font-size: 22px;'>日</p>
+					</label>
+					<input type="number" value="" id="EEWsim_H" name="EEWsim_H" style="width:50px" min="0" max="23" step="1">
+					<label for="EEWsim_M">
+						<p style='font-size: 22px;'>時</p>
+					</label>
+					<input type="number" value="" id="EEWsim_M" name="EEWsim_M" style="width:50px" min="0" max="59" step="1">
+					<label for="EEWsim_S">
+						<p style='font-size: 22px;'>分</p>
+					</label>
+					<input type="number" value="" id="EEWsim_S" name="EEWsim_S" style="width:50px" min="0" max="59" step="1">
+					<label for="EEWsim_hidden">
+						<p style='font-size: 22px;'>秒</p>
+					</label>
+					<input type="text" value="" id="EEWsim_hidden" name="EEWsim_hidden" style="width:50px;display: none;">
+					<br>
+					<input class="maincheckbox" type="checkbox" value="" id="EEWsim_now" name="EEWsim_now">
+					<label for="EEWsim_now">
+						<p style='font-size: 22px;'>開始模擬後馬上發布速報</p>
+					</label>
+					<br>
+					<button type="button" class="btn btn-primary" style="margin-right: 20px; " onclick="">開始模擬</button>
+				
+			</div>
+		</div>
+		<!--地震報告-->
+		<div class="container tab-pane" id="sounds">
+			<div style="margin-left: 50px;">
+				<h4>緊急地震速報音效</h4>
+				<input style="display: none;" class="maincheckbox" type="checkbox" value="" id="enable_jp_eew_sound" name="enable_jp_eew_sound" disabled>
+				<label for="enable_jp_eew_sound">
+					<p style='font-size: 22px;display: none;'>日本地震速報音效</p>
+				</label>
+				<br>
+				<input style="display: none;" class="maincheckbox" type="checkbox" value="" id="enable_tw_eew_sound" name="enable_tw_eew_sound" disabled>
+				<label for="enable_tw_eew_sound">
+					<p style='font-size: 22px;display: none;'>台灣地震速報音效</p>
+				</label>
+				<br>
+				<input class="maincheckbox" type="checkbox" value="" id="enable_eew_tw_read" name="enable_eew_tw_read" style='margin-bottom: 0px;'>
+				<label for="enable_eew_tw_read" style='margin-bottom: 0px;'>
+					<p style='font-size: 22px;'>朗讀台灣地震速報內容</p>
+				</label>
+				<h6>朗讀格式:緊急地震速報 本地震度()級 最大震度()級</h6>
+				<!--<h6>需要打開台灣地震速報音效</h6>-->
+				<hr/>
+				<h4>即時測站震度音效</h4>
+				<input class="smallcheckbox" type="checkbox" value="" id="enable_int_1" name="enable_int_1">
+				<label for="enable_int_1" style="margin-bottom:1px">
+					<p style='font-size: 20px;margin-bottom:1px'>震度1</p>
+				</label>
+				<br>
+				<input class="smallcheckbox" type="checkbox" value="" id="enable_int_2" name="enable_int_2">
+				<label for="enable_int_2" style="margin-bottom:1px">
+					<p style='font-size: 20px;margin-bottom:1px'>震度2</p>
+				</label>
+				<br>
+				<input class="smallcheckbox" type="checkbox" value="" id="enable_int_3" name="enable_int_3">
+				<label for="enable_int_3" style="margin-bottom:1px">
+					<p style='font-size: 20px;margin-bottom:1px'>震度3</p>
+				</label>
+				<br>
+				<input class="smallcheckbox" type="checkbox" value="" id="enable_int_4" name="enable_int_4">
+				<label for="enable_int_4" style="margin-bottom:1px">
+					<p style='font-size: 20px;margin-bottom:1px'>震度4</p>
+				</label>
+				<br>
+				<input class="smallcheckbox" type="checkbox" value="" id="enable_int_5-" name="enable_int_5-">
+				<label for="enable_int_5-" style="margin-bottom:1px">
+					<p style='font-size: 20px;margin-bottom:1px'>震度5弱</p>
+				</label>
+				<br>
+				<input class="smallcheckbox" type="checkbox" value="" id="enable_int_5k" name="enable_int_5k">
+				<label for="enable_int_5k" style="margin-bottom:1px">
+					<p style='font-size: 20px;margin-bottom:1px'>震度5強</p>
+				</label>
+				<br>
+				<input class="smallcheckbox" type="checkbox" value="" id="enable_int_6-" name="enable_int_6-">
+				<label for="enable_int_6-" style="margin-bottom:1px">
+					<p style='font-size: 20px;margin-bottom:1px'>震度6弱</p>
+				</label>
+				<br>
+				<input class="smallcheckbox" type="checkbox" value="" id="enable_int_6k" name="enable_int_6k">
+				<label for="enable_int_6k" style="margin-bottom:1px">
+					<p style='font-size: 20px;margin-bottom:1px'>震度6強</p>
+				</label>
+				<br>
+				<input class="smallcheckbox" type="checkbox" value="" id="enable_int_7" name="enable_int_7">
+				<label for="enable_int_7" style="margin-bottom:1px">
+					<p style='font-size: 20px;margin-bottom:1px'>震度7</p>
+				</label>
+				<br>
+				<hr/>
+				
+			</div>
+		</div>
+		<div class="container tab-pane" id="others">
+			<div style="margin-left: 50px;">
+				<input class="maincheckbox" type="checkbox" value="" id="enable_autolaunch" name="enable_autolaunch">
+				<label for="enable_autolaunch">
+					<p style='font-size: 22px;margin-bottom: 1px;'>開機自啟動</p>
+				</label>
+				<p style='font-size: 15px;'>忘記開RF-monitor的人必備</p>
+				<br>
+				<input  class="maincheckbox" type="checkbox" value="" id="enable_gpu" name="enable_gpu">
+				<label for="enable_gpu" style='margin-bottom: 0px;'>
+					<p style='font-size: 22px;margin-bottom: 1px;'>硬體加速(建議開啟)</p>
+					
+				</label>
+				<p style='font-size: 15px;'>開啟後如有如有卡頓可關閉此選項</p>
+				<br>
+				<input  class="maincheckbox" type="checkbox" value="" id="minimize_to_tray" name="minimize_to_tray">
+				<label for="minimize_to_tray" style='margin-bottom: 0px;'>
+					<p style='font-size: 22px;margin-bottom: 1px;'>視窗最小化到工具欄</p>
+				</label>
+				<p style='font-size: 15px;'>關閉視窗後不會關閉程式，仍可在工具欄快速開啟</p>
+			</div>
+		</div>
+		<div class="container tab-pane" id="about">
+			<div class="center">
+				<h4>RexKim Studio</h4>
+				<h5>作者:楊喚宇 dc:.レクシー#0211</h5>
+				<hr/>
+				<h4>特別感謝</h4>
+				<h5>地牛記錄小組TWERG</h5>
+				<h5>EXPTech探索科技</h5>
+				<!--<h5>TREM測站資料為EXPTech探索科技提供</h5>-->
+				<hr/>
+				<p>ver.2.1.0   資料僅供參考，可能會有所誤差，實際應以氣象局所最終公布資料為準</p>
+				<p>意見反應、Bug回報 請聯繫rexis0227@gmail.com</p>
+			</div>
+		</div>
+	</div>
+	<hr/>
+	<footer class="bottom">
+		<h6 class="ganhua">每日一幹話:「<span id="ganhua"></span>」</h6>
+		<button type="button" class="btn btn-primary" style="margin-right: 20px; " onclick="submit()">套用(重新啟動以生效)</button>
+		<button type="button" class="btn btn-secondary" style="margin-right: 30px;" onclick="cancel()">取消</button>
+	</footer>
+	<script src="js/setting.js"></script>
+</body>
+</html>
