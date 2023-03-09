@@ -5,9 +5,9 @@
 
 ----
 <div style="display: grid; grid-template-columns: 1fr 1fr;">
-<img alt="台灣/日本地震速報" title="台灣/日本地震速報" src="https://rf-monitor.github.io/image/eew.png" style="width: 50%; height: auto;" />
-<img alt="RF-sensor震度計" title="RF-sensor震度計" src="https://rf-monitor.github.io/image/sensor_map.png" style="width: 50%; height: auto;" />
-<img alt="天氣警特報" title="天氣警特報" src="https://rf-monitor.github.io/image/weather.png" style="width: 50%; height: auto;" />
+<img alt="台灣/日本地震速報" title="台灣/日本地震速報" src="https://rf-monitor.github.io/image/eew.png" style="width: 25%; height: auto;" />
+<img alt="RF-sensor震度計" title="RF-sensor震度計" src="https://rf-monitor.github.io/image/sensor_map.png" style="width: 25%; height: auto;" />
+<img alt="天氣警特報" title="天氣警特報" src="https://rf-monitor.github.io/image/weather.png" style="width: 25%; height: auto;" />
 </div>
 
 ## 關於 RF-Monitor
