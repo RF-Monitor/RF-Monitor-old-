@@ -19,4 +19,5 @@ RF-sensor震度計 即時搖晃資訊，縮小預警盲區<br>
 官网: (http://rexisstudio.tplinkdns.com:8080)<br>
 Google 云端下载站点：（https://drive.google.com/drive/folders/1gb2OpmcMnaiuo67LXT5GhVwsVLFxjVJD）
 
-加入  Discord https://discord.gg/Gqt3WhrQpd
+### 加入我們  
+ Discord (https://discord.gg/Gqt3WhrQpd)
