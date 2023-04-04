@@ -133,6 +133,11 @@
 						<p style='font-size: 22px;'> 當收到RF測站警報時，顯示警報範圍</p>
 					</label>
 					<br>
+					<input class="maincheckbox" type="checkbox" value="" id="enable_wave" name="enable_wave">
+					<label for="enable_wave">
+						<p style='font-size: 22px;'>顯示測站波型(可能較耗效能及網路資源)</p>
+					</label>
+					<br>
 					<input style="display: none;" class="maincheckbox" type="checkbox" value="" id="enable_PGA_TREM" name="enable_PGA_TREM" disabled>
 					<label  style='margin-bottom: 0px;' for="enable_PGA_TREM">
 						<p style='display: none;font-size: 22px;margin-bottom: 1px;'>顯示TREM即時測站</p>
@@ -166,6 +171,7 @@
 					<br>
 					<h6>如果畫面因颱風路徑而過於雜亂，可考慮關閉此選項</h6>
 					<hr/>
+					<div style="display: none;">
 					<h4>地震速報模擬</h4>
 					<label for="EEWsim_magnitude">
 						<p style='font-size: 22px;'>規模</p>
@@ -222,7 +228,7 @@
 					</label>
 					<br>
 					<button type="button" class="btn btn-primary" style="margin-right: 20px; " onclick="">開始模擬</button>
-				
+					</div>
 			</div>
 		</div>
 		<!--地震報告-->
@@ -325,10 +331,8 @@
 				<hr/>
 				<h4>特別感謝</h4>
 				<h5>地牛記錄小組TWERG</h5>
-				<h5>EXPTech探索科技</h5>
-				<!--<h5>TREM測站資料為EXPTech探索科技提供</h5>-->
 				<hr/>
-				<p>ver.2.1.0   資料僅供參考，可能會有所誤差，實際應以氣象局所最終公布資料為準</p>
+				<p>ver.2.2.0-pre3   資料僅供參考，可能會有所誤差，實際應以氣象局所最終公布資料為準</p>
 				<p>意見反應、Bug回報 請聯繫rexis0227@gmail.com</p>
 			</div>
 		</div>

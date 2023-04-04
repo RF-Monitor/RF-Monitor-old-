@@ -7,521 +7,13 @@
 	<script>if (typeof module === 'object') { window.jQuery = window.$ = module.exports; };</script>
 	<link href="css/bootstrap.min.css" rel="stylesheet" />
 	<link href="css/leaflet.css" rel="stylesheet" />
+	<link href="css/index.css" rel="stylesheet" />
 	<script src="js/bootstrap.min.js"></script>
 	<script src="js/leaflet.js"></script>
 	<script src="js/utility.js"></script>
 	<script src="data/location.js"></script>
 	<style>
-		.navbar{
-			display: flex;
-			flex-direction: row;
-			flex-wrap: nowrap;
-			justify-content: left;
-			height: 30px;
-			width: 100%;
-			z-index: 11;
-			background-color: #3C3C3C;
-			opacity: 0.7;
-		}
-		.navitem{
-			border-bottom: solid;
-			cursor: pointer; 
-			margin-bottom: 3px;
-			border-bottom-color: #3C3C3C;
-			margin-right: 15px;
-		}
-		/*.navitem:hover {
-			border-bottom: solid;
-			border-bottom-width: 3px;
-			border-bottom-color: #5e5e5e;
-		}*/
-		.page {
-			display: flex;
-			flex-direction: row;
-			flex-wrap: nowrap;
-			justify-content: center;
-		}
-		.example {
-			display: none;
-			height: 245px;
-			width: 90px;
-			overflow-x: hidden;
-			overflow-y: auto;
-			position: absolute;
-			top: 0px;
-			left: 250px;
-			z-index: 10;
-			opacity: 0.7;
-			background-color: #3C3C3C;
-			color: white;
-			font-size: 15px;
-			border-top-left-radius: 7px;
-			border-top-right-radius: 7px;
-			border-bottom-left-radius: 7px;
-			border-bottom-right-radius: 7px;
-		}
-		.time_now{
-			height: 27px;
-			width: fit-content;
-			overflow-x: hidden;
-			overflow-y: auto;
-			position: absolute;
-			bottom: 0px;
-			right: 0;
-			z-index: 10;
-			background-color:#3c3c3c;
-			border-top-left-radius: 5px;
-			border-top-right-radius: 5px;
-			border-bottom-left-radius: 5px;
-			border-bottom-right-radius: 5px;
-		}
-		.sta_count{
-			height: 27px;
-			width: fit-content;
-			overflow-x: hidden;
-			overflow-y: auto;
-			position: absolute;
-			bottom: 258px;
-			right: 0px;
-			z-index: 10;
-			opacity: 0.7;
-			background-color:#3c3c3c;
-			border-top-left-radius: 5px;
-			border-top-right-radius: 5px;
-			border-bottom-left-radius: 5px;
-			border-bottom-right-radius: 5px;
-		}
-		.btn_setting{
-			position: absolute;
-			bottom: 1px;
-			right: 130px;
-			z-index: 10;
-		}
-		.btn_join{
-			position: absolute;
-			bottom: 1px;
-			right: 180px;
-			z-index: 10;
-		}
-		.max_shindo{
-			height: 120px;
-			width: 90px;
-			overflow-x: hidden;
-			overflow-y: auto;
-			position: absolute;
-			bottom: 135px;
-			right: 0;
-			z-index: 10;
-			opacity: 0.7;
-			background-color:#3c3c3c;
-			border-top-left-radius: 5px;
-			border-top-right-radius: 5px;
-			border-bottom-left-radius: 5px;
-			border-bottom-right-radius: 5px;
-		}
-
-		.selected {
-			height: fit-content;
-			/* width: 200px;*/
-			width: fit-content;
-			/*margin-bottom: 10px;*/
-			overflow-x: hidden;
-			overflow-y: auto;
-			position: absolute;
-			bottom: 30px;
-			right: 0;
-			opacity: 0.7;
-			background-color: #080808;
-			/*color:lightgreen;*/
-			z-index: 10;
-			border-top-left-radius: 5px;
-			border-top-right-radius: 5px;
-			border-bottom-left-radius: 5px;
-			border-bottom-right-radius: 5px;
-			
-		}
-		.wave{
-			height: 400px;
-			width: 400px;
-			position: absolute;
-			right: 0;
-			bottom: 300px;
-			opacity: 0.7;
-			background-color: #414141;
-			z-index: 10;
-			border-top-left-radius: 5px;
-			border-top-right-radius: 5px;
-			border-bottom-left-radius: 5px;
-			border-bottom-right-radius: 5px;
-		}
-		.wave_put{
-			height: fit-content;
-			width: fit-content;
-			position: absolute;
-			right: 0;
-			bottom: 500px;
-			opacity: 0.7;
-			background-color: black;
-			z-index: 11;
-			border-top-left-radius: 5px;
-			/*border-top-right-radius: 5px;*/
-			border-bottom-left-radius: 5px;
-			/*border-bottom-right-radius: 5px;*/
-		}
-		.selected_inside {
-			margin:10px 10px 10px 10px;
-		}
-		.selected_inside_info{
-			display: flex;
-			flex-direction: row;
-			flex-wrap: nowrap;
-			justify-content: center;
-		}
-		.disconnected{
-			border-top-left-radius: 5px;
-			border-top-right-radius: 5px;
-			border-bottom-left-radius: 5px;
-			border-bottom-right-radius: 5px;
-			opacity:0.7;
-			height: fit-content;
-			width: fit-content;
-			border: solid;
-			border-color: red;
-			border-width: 3px;
-			display: none;
-			background-color: black;
-			color: white;
-			position: absolute;
-			top:0;
-  			left: calc(50% - (321px/2));
-			z-index: 15;
-		}
-		.disconnected_inside{
-			margin: 5px;
-		}
-		.report_discription{
-			display:none;
-			color:white;
-			background-color: black;
-			position: absolute;
-			bottom:130px;
-			right:250px;
-			border: solid;
-			border-color: white;
-			border-width: 3px;
-			border-top-left-radius: 5px;
-			border-top-right-radius: 5px;
-			border-bottom-left-radius: 5px;
-			border-bottom-right-radius: 5px;
-			opacity:0.7;
-			z-index:15;
-		}
-		.report_discription_inside{
-			margin-top: 5px;
-			margin-bottom: 5px;
-			margin-left: 10px;
-			margin-right: 10px;
-		}
-		.backToMap{
-			height: 30px;
-			width: 50px;
-			position: absolute;
-			top:0;
-			right:250px;
-			display:none;
-			border-top-left-radius: 5px;
-			border-top-right-radius: 5px;
-			border-bottom-left-radius: 5px;
-			border-bottom-right-radius: 5px;
-			border: solid;
-			border-color: black;
-			border-width: 3px;
-			background-color: #272727;
-			color: white;
-			cursor: pointer;
-			z-index: 15;
-		}
-		.backToMap:hover{
-			border-color: white;
-		}
-		.map{
-			height: 100%;
-			overflow: hidden;
-			z-index: 15;
-			height: 100%;
-			width: 100%;
-			position:absolute;
-			top:0;
-  			left:0;
-		}
-		.map_shakingArea{
-			height: 0px;
-			overflow: hidden;
-			z-index: 16;
-			width: 100%;
-			position:absolute;
-			top:0;
-  			left:0;
-		}
-		.left {
-			height: fit-content;
-			/*height: 100%;*/
-			width: 250px;
-			overflow-x: hidden;
-			overflow-y: auto;
-			position: absolute;
-			top: 35px;
-			left: 0px;
-			z-index: 10;
-			opacity: 0.7;
-		}
-
-			.left::-webkit-scrollbar {
-				display: none;
-			}
-		.center {
-			background-color: black;
-			height: 100%;
-			width: 100%;
-			z-index: 1;
-		}
-		.right {
-			height: 100%;
-			width: 250px;
-			position: absolute;
-			top: 0px;
-			right: 0px;
-			z-index: 10;
-			opacity: 0.7;
-		}
-		.earthquake_list_title {
-			background-color: darkcyan;
-			margin-left: 5px;
-			width: 240px;
-			height: 30px;
-			margin-top: 35px;
-			margin-right: 0px;
-			border-top-left-radius: 7px;
-			border-top-right-radius: 7px;
-		}
-
-		.earthquake_list {
-			width: 250px;
-			height: calc(100% - 65px);
-			overflow-x: hidden;
-			overflow-y: auto;
-			
-			margin-right: auto;
-			margin-bottom: 1px;
-		}
-
-			.earthquake_list::-webkit-scrollbar {
-				display: none;
-			}
-
-		.earthquake_report {
-			margin-left: 5px;
-			margin-right: auto;
-			margin-bottom: 3px;
-			border-radius: 7px;
-			width: 240px;
-			cursor: pointer; 
-		}
-
-		.earthquake_report:hover {
-			outline: 3px #fff solid;
-			outline-offset: -3px;
-		}
-
-		.footer {
-			display: flex;
-			flex-direction: row;
-			flex-wrap: nowrap;
-			justify-content: left;
-		}
-
-		.typhoon {
-			margin-left: 5px;
-			margin-right: 5px;
-			margin-bottom: 5px;
-		}
-
-		.typhoon_title_box {
-			background-color: #0066CC;
-			border-top-left-radius: 7px;
-			border-top-right-radius: 7px;
-			height: 30px;
-		}
-
-		.typhoon_main_box {
-			background-color: #414141;
-			color: white;
-			border-bottom-left-radius: 7px;
-			border-bottom-right-radius: 7px;
-		}
-
-		.eew_jp {
-			margin-left: 5px;
-			margin-right: 5px;
-			margin-bottom: 5px;
-		}
-
-		.eew_jp_title_box {
-			background-color: white;
-			border-top-left-radius: 7px;
-			border-top-right-radius: 7px;
-			height: 30px;
-		}
-
-		.eew_jp_status_box {
-			background-color: #3c3c3c;
-			border-bottom-left-radius: 7px;
-			border-bottom-right-radius: 7px;
-			color: white;
-			height: 30px;
-		}
-
-		.eew_jp_main_box {
-			flex-direction: row;
-			flex-wrap: nowrap;
-			justify-content: center;
-			background-color: #3c3c3c;
-			color: white;
-			border-bottom-left-radius: 7px;
-			border-bottom-right-radius: 7px;
-			display: none;
-		}
-
-		.eew_tw {
-			margin-left: 5px;
-			margin-right: 5px;
-			margin-bottom: 5px;
-		}
-
-		.eew_tw_title_box {
-			background-color: #0066CC;
-			border-top-left-radius: 7px;
-			border-top-right-radius: 7px;
-			height: 30px;
-		}
-
-		.eew_tw_status_box {
-			background-color: #3c3c3c;
-			border-bottom-left-radius: 7px;
-			border-bottom-right-radius: 7px;
-			color: white;
-			height: 30px;
-		}
-
-		.eew_tw_main_box {
-			flex-direction: row;
-			flex-wrap: nowrap;
-			justify-content: center;
-			background-color: #3c3c3c;
-			color: white;
-			display: none;
-		}
-
-		.eew_tw_local {
-			background-color: blue;
-			color: white;
-			display: none;
-			margin-bottom: 5px;
-			border-bottom-left-radius: 7px;
-			border-bottom-right-radius: 7px;
-		}
-		.RF{
-			margin-left: 5px;
-			margin-right: 5px;
-			margin-bottom: 5px;
-		}
-		.RF_title{
-			background-color: #0066CC;
-			border-top-left-radius: 7px;
-			border-top-right-radius: 7px;
-			height: 30px;
-		}
-		.RF_list{
-			background-color: #3c3c3c;
-			border-bottom-left-radius: 7px;
-			border-bottom-right-radius: 7px;
-			color: white;
-			height: 30px;
-		}
-
-		.tsunami {
-			margin-left: 5px;
-			margin-right: 5px;
-			margin-bottom: 5px;
-			display: none;
-		}
-
-		.tsunami_title_box {
-			background-color: #0066CC;
-			border-top-left-radius: 7px;
-			border-top-right-radius: 7px;
-			height: 30px;
-		}
-
-		.tsunami_main_box {
-			background-color: #414141;
-			border-bottom-left-radius: 7px;
-			border-bottom-right-radius: 7px;
-			margin-bottom: 5px;
-		}
-
-		.tsunami_coastline{
-			color: white;
-			display: none;
-		}
-
-		.tsunami_content{
-			background-color:#414141; 
-			margin-left: 5px; 
-			margin-right: 5px;
-			margin-bottom: 30px;
-			display: none;
-		}
-
-		.others {
-			margin-left: 5px;
-			margin-right: 5px;
-			margin-bottom: 5px;
-		}
-
-		.others_title_box {
-			color: white;
-			background-color: #63AA8B;
-			border-top-left-radius: 7px;
-			border-top-right-radius: 7px;
-		}
-
-		.others_main_box {
-			background-color: #414141;
-			border-bottom-left-radius: 7px;
-			border-bottom-right-radius: 7px;
-			margin-bottom: 5px;
-		}
-
-		.figure_title_box {
-			background-color: #272727;
-			border-top-left-radius: 7px;
-			border-top-right-radius: 7px;
-			height: 30px;
-			width: 90px;
-		}
-		.lang_CNT{
-			display:block
-		}
-		.lang_ENG{
-			display:none
-		}
-		.lang_JP{
-			display:none
-		}
-		.lang_CNS{
-			display:none
-		}
+		
 	</style>
 </head>
 
@@ -555,10 +47,10 @@
 			<!--地震速報-->
 			<div class="eew_jp">
 				<div class="eew_jp_title_box">
-					<h4 class='lang_CNT' style="color:red ;">日本地震速報</h4>
-					<h4 class='lang_ENG' style="color:red ;">Japan EEW</h4>
-					<h4 class='lang_JP' style="color:red ;">緊急地震速報(日本)</h4>
-					<h4 class='lang_CNS' style="color:red ;">日本地震预警</h4>
+					<strong><h5 class='lang_CNT' style="color:white ;"><strong>日本地震速報</strong></h5></strong>
+					<strong></strong><h5 class='lang_ENG' style="color:white ;"><strong>Japan EEW</strong></h5></strong>
+					<strong></strong><h5 class='lang_JP' style="color:white ;"><strong>緊急地震速報(日本)</strong></h5></strong>
+					<strong></strong><h5 class='lang_CNS' style="color:white ;"><strong>日本地震预警</strong></h5></strong>
 				</div>
 				<div class='eew_jp_status_box'><h4><span id='eew_jp_status'></span></h4></div>
 				<div class='eew_jp_main_box'>
@@ -598,10 +90,10 @@
 
 			<div class="eew_tw">
 				<div class="eew_tw_title_box">
-					<h4 class='lang_CNT' style="color:white ;">臺灣地震速報</h4>
-					<h4 class='lang_ENG' style="color:white ;">Taiwan EEW</h4>
-					<h4 class='lang_JP' style="color:white ;">緊急地震速報(台湾)</h4>
-					<h4 class='lang_CNS' style="color:white ;">台湾地震预警</h4>
+					<h5 class='lang_CNT' style="color:white ;"><strong>臺灣地震速報</strong></h5>
+					<strong><h5 class='lang_ENG' style="color:white ;"><strong>Taiwan EEW</strong></h5></strong>
+					<strong><h5 class='lang_JP' style="color:white ;"><strong>緊急地震速報(台湾)</strong></h5></strong>
+					<strong><h5 class='lang_CNS' style="color:white ;"><strong>台湾地震预警</strong></h5></strong>
 				</div>
 				<div class='eew_tw_status_box'><h4 style='color:white'><span id='eew_tw_status'></h4></div>
 				<div class=' eew_tw_main_box'>
@@ -647,13 +139,36 @@
 				</div>
 			</div>
 			<!--RF測站-->
-			<div class="RF">
+			<div class="RF" style="display: block;">
 				<div class="RF_title">
 					<!--<h4><span id="RF_title"></span></h4>-->
-					<h4 style="color:white ;">RF區域警報</h4>
+					<h5 style="color:white ;"><strong>RF區域警報</strong></h5>
 				</div>
 				<div class="RF_list">
-					<h4 style="color:white ;">目前沒有區域警報</h4>
+					<h4 id="RF_status" style="color:white ;display: block;">目前沒有區域警報</h4>
+					<div class="RF_lists">
+						<div id="RF_list_1">
+							<div id="RF_item_1" class="RF_item">
+								
+							</div>
+							<div id="RF_item_2" class="RF_item">
+								
+							</div>
+							<div id="RF_item_3" class="RF_item">
+								
+							</div>
+						
+							<div id="RF_item_4" class="RF_item">
+								
+							</div>
+							<div id="RF_item_5" class="RF_item">
+								
+							</div>
+							<div id="RF_item_6" class="RF_item">
+								
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 			<!--海嘯-->
@@ -811,17 +326,17 @@
 			</div>
 		</div>
 		<!--波型視窗-->
-		<div class="wave">
+		<div id="wave" class="wave">
 			<canvas id="waveCanvas1" style="border: 2px white solid;position: absolute;top:0;right:0" width="396" height="98"></canvas>
 			<canvas id="waveCanvas2" style="border: 2px white solid;position: absolute;top:100px;right:0" width="396" height="98"></canvas>
 			<canvas id="waveCanvas3" style="border: 2px white solid;position: absolute;top:200px;right:0" width="396" height="98"></canvas>
 			<canvas id="waveCanvas4" style="border: 2px white solid;position: absolute;top:300px;right:0" width="396" height="98"></canvas>
 		</div>
-		<div class="wave_put">
+		<!--<div class="wave_put">
 			<h6 style="color:white">></h6>
 			<h6 style="color:white">收</h6>
 			<h6 style="color:white">起</h6>
-		</div>
+		</div>-->
 		<!--斷線訊息-->
 		<div class="disconnected">
 			<div class="disconnected_inside">
@@ -851,7 +366,7 @@
 		<!--<button class="btn_setting" id="setting" style="border-radius:5px">設定</button>
 		<button class="btn_join" id="join" style="border-radius:5px">加入地震觀測計畫</button>-->
 		<div class="time_now">
-			<h6 align="center" style="color:white;margin: 3px;">當前時間: <span style="color:white;" id= "nowDiv"; > </span> </h6>
+			<h6 align="center" style="color:white;margin: 3px;"><span style="color:white;" id= "nowDiv"; > </span> </h6>
 		</div>
 	</div>
 	<div id="page2" class="page2">
@@ -898,24 +413,14 @@
 
 </body>
 
+<script src="js/ui.js"></script>
 <script src="js/indexprocess.js"></script>
 <script type="text/javascript">
 	//only for app//////////////////////////////////////////////////////////////////////////////////////////////////////
 	require('./renderer.js');		
 	//XHRs初始化
-	var XHR = createXHR();//Info
-	var XHR2 = createXHR();//jp EEW
-	var XHR3 = createXHR();//PGA
-	var XHR4 = createXHR();//TW EEW
-	var XHR5 = createXHR();//天氣特報
-	var XHR_infoDistributed = createXHR();
-	var XHR_tsunami = createXHR();
-	var XHR_typhoon = createXHR();
-	var XHR_others = createXHR();
-	var XHR_ver = createXHR();
-	var XHR_ntp = createXHR();
 							 
-	ntp();
+	
 	//初始化設定
 	var userlat = parseFloat(storage.getItem('userlat'));
 	var userlon = parseFloat(storage.getItem('userlon'));
@@ -947,22 +452,23 @@
 		document.querySelector('.eew_tw').style.display = "none";
 	}
 	//only for app///////////////////////////////////////////////////////////////////////////////////////////////////////////
+	var bounds = L.latLngBounds(L.latLng(90, 360), L.latLng(-90, -180));
 	var osmUrl = 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png';
-	var map_shakingArea = L.map('map_shakingArea', { zoomControl: false,attributionControl:false }).setView([23.7, 120.924610], 8);
+	var map_shakingArea = L.map('map_shakingArea', { maxBounds: bounds,maxBoundsViscosity: 1.0,zoomControl: false,attributionControl:false,zoomDelta: 0.1 }).setView([23.7, 120.924610], 8);
 	var osm = new L.TileLayer(osmUrl, { minZoom: 3, maxZoom: 16 });
 	map_shakingArea.addLayer(osm);
 
-	var map = L.map('mapid', { zoomControl: false ,attributionControl:false}).setView([23.7, 120.924610], 8);
+	var map = L.map('mapid', { maxBounds: bounds,maxBoundsViscosity: 1.0,zoomControl: false ,attributionControl:false,zoomDelta: 0.1}).setView([23.7, 120.924610], 8);
 	osmUrl = 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png';
 	osm = new L.TileLayer(osmUrl, { minZoom: 3, maxZoom: 16 });
 	map.addLayer(osm);
 
-	var map2 = L.map('map2', { zoomControl: false ,attributionControl:false}).setView([23.7, 120.924610], 8);
+	var map2 = L.map('map2', { maxBounds: bounds,maxBoundsViscosity: 1.0,zoomControl: false ,attributionControl:false,zoomDelta: 0.1}).setView([23.7, 120.924610], 8);
 	osmUrl = 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png';
 	osm = new L.TileLayer(osmUrl, { minZoom: 3, maxZoom: 16 });
 	map2.addLayer(osm);
 
-	var map3 = L.map('map3', { zoomControl: false ,attributionControl:false}).setView([23.7, 120.924610], 8);
+	var map3 = L.map('map3', { maxBounds: bounds,maxBoundsViscosity: 1.0,zoomControl: false ,attributionControl:false,zoomDelta: 0.1}).setView([23.7, 120.924610], 8);
 	osmUrl = 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png';
 	osm = new L.TileLayer(osmUrl, { minZoom: 3, maxZoom: 16 });
 	map3.addLayer(osm);
@@ -1158,21 +664,50 @@
 
 <script>
 	function show() {
-		var date = new Date(Date.now() + ntpoffset_); 
-		var now = "";
-		now = date.getFullYear() + "/"; 
-		now = now + (date.getMonth() + 1) + "/"; 
-		now = now + date.getDate();
-		now = now + " ";
-		now = now + date.getHours() + ":";
-		now = now + date.getMinutes() + ":";
-		now = now + date.getSeconds() ;
-		document.getElementById("nowDiv").innerHTML = now; 
+		//var date = new Date(Date.now().Format("yyyy/MM/dd hh:mm:ss") + ntpoffset_);
+		//var date = (new Date(Date.now()) + ntpoffset_).Format("yyyy-MM-dd hh:mm:ss");
+        //var date = new Date(Date.now().Format("yyyy/MM/dd hh:mm:ss") + ntpoffset_); 
+
+        var myDate = new Date((Date.now()) + ntpoffset_);
+        myDate.getYear();        // 獲取當前年份(2位)
+        myDate.getFullYear();    // 獲取完整的年份(4位,1970-????)
+        myDate.getMonth();       // 獲取當前月份(0-11,0代表1月)
+        myDate.getDate();        // 獲取當前日(1-31)
+        myDate.getDay();         // 獲取當前星期X(0-6,0代表星期天)
+        myDate.getTime();        // 獲取當前時間(從1970.1.1開始的毫秒數)
+        myDate.getHours();       // 獲取當前小時數(0-23)
+        myDate.getMinutes();     // 獲取當前分鐘數(0-59)
+        myDate.getSeconds();     // 獲取當前秒數(0-59)
+        myDate.getMilliseconds();    // 獲取當前毫秒數(0-999)
+        myDate.toLocaleDateString();     // 獲取當前日期
+        var mytime = myDate.toLocaleTimeString();     // 獲取當前時間
+        myDate.toLocaleString();        // 獲取日期與時間
+
+        Date.prototype.Format = function (fmt) { // author: meizz
+            var o = {
+                "M+": this.getMonth() + 1, // 月份
+                "d+": this.getDate(), // 日
+                "h+": this.getHours(), // 小時
+                "m+": this.getMinutes(), // 分
+                "s+": this.getSeconds(), // 秒
+                "q+": Math.floor((this.getMonth() + 3) / 3), // 季度
+                "S": this.getMilliseconds() // 毫秒
+            };
+            if (/(y+)/.test(fmt))
+                fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+            for (var k in o)
+                if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+            return fmt;
+        }
+
+        var time2 = new Date().Format("yyyy/MM/dd hh:mm:ss");
+
+        document.getElementById("nowDiv").innerHTML = time2; 
 		setTimeout("show()", 1000); 
 	}
 </script>
 
-<body onload="show()">
+<body>
 	<div id="nowDiv"></div>
 </body>
 
@@ -1370,4 +905,25 @@
 		修復:
 		修復在前兩個版本收不到地震速報的問題
 		修復剛開啟時，有機率顯示測站全部斷線或部分斷線的問題
+	2.1.1-pre1:
+		更改:
+		UI變更
+	2.1.1:
+		更改:
+		時間同步方式改良
+	2.2.0-pre1:
+		新增:
+        波型顯示(預設關閉)
+		更改:
+        部分功能改為異步執行
+		修正:
+        地圖會滑出範圍的問題
+	2.2.0-pre2:
+		新增:
+		顯示RF區域警報
+		更改:
+		移除「當前時間」4字
+	2.2.0-pre3:
+		修復:
+		修正當ntp對時出現例外狀況時的處理方式
 	-->
