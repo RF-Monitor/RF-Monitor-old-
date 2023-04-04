@@ -17,15 +17,17 @@ enable_window_popup = storage.getItem("enable_window_popup");
 enable_ty_analysis = storage.getItem("enable_ty_analysis");
 enable_eew_tw_read = storage.getItem("enable_eew_tw_read");
 enable_notification = storage.getItem("enable_notification");
-enable_warningArea = storage.getItem('enable_warningArea') 
+enable_warningArea = storage.getItem('enable_warningArea');
+enable_wave = storage.getItem('enable_wave');
 PGA_warn_only = storage.getItem('PGA_warn_only');
-let opacity_ = storage.getItem('opacity');
+opacity_ = storage.getItem('opacity');
 selected_station = storage.getItem('selected_station');
 document.querySelector(".left").style.opacity = opacity_;
 document.querySelector(".right").style.opacity = opacity_;
 document.querySelector(".max_shindo").style.opacity = opacity_;
 document.querySelector(".selected").style.opacity = opacity_;
 document.querySelector(".sta_count").style.opacity = opacity_;
+document.querySelector(".time_now").style.opacity = opacity_;
 ///////////震度音效/////////////
 let enable_shindo_sounds_1 = storage.getItem('enable_shindo_sounds_1');
 let enable_shindo_sounds_2 = storage.getItem('enable_shindo_sounds_2');
@@ -66,11 +68,13 @@ max_shindo = "0";//最大震度
 max_Shindo_before = "0";//上一次最大震度
 RF_alert_list = [];//觸發測站列表
 wave_list = []//顯示波型列表
+//eew狀態全域
+EEW_TW_ing = false;
 /*
 wave_list=[{id : id,wave : [{x : 1 , y : 1 , z : 1 , unixTimestamp : 1},{x : 1 , y : 1 , z : 1 , unixTimestamp : 1}]} , {id : id,wave : [{x : 1 , y : 1 , z : 1 , unixTimestamp : 1},{x : 1 , y : 1 , z : 1 , unixTimestamp : 1}]}]
 */ 
 //test only
-wave_list = [{'id':'6050_0012',wave : []},{'id':'6050_0011',wave : []},{'id':'6050_0007',wave : []},{'id':'6050_0009',wave : []}]
+wave_list = [{'id':'6050_0012',wave : []},{'id':'6050_0011',wave : []},{'id':'6050_0007',wave : []},{'id':'6050_0003',wave : []}]
 shindo_color = {
 	"1":"white",
 	"2":"#0066CC",
@@ -104,7 +108,19 @@ shindo_icons = {
 	"6+":L.icon({iconUrl:"./shindo_icon/6+.png",iconSize:[20,20]}),
 	"7":L.icon({iconUrl:"./shindo_icon/7.png",iconSize:[20,20]})
 }
-
+//XHR初始化
+var XHR = createXHR();//Info
+var XHR2 = createXHR();//jp EEW
+var XHR3 = createXHR();//PGA
+var XHR4 = createXHR();//TW EEW
+var XHR5 = createXHR();//天氣特報
+var XHR_infoDistributed = createXHR();
+var XHR_tsunami = createXHR();
+var XHR_typhoon = createXHR();
+var XHR_others = createXHR();
+var XHR_ver = createXHR();
+var XHR_ntp = createXHR();
+//時間差值(毫秒)
 ntpoffset_ = 0;
 
 nowplayAud_eew = null;
@@ -535,8 +551,8 @@ function InfoUpdate()
 								color = '#63AA8B';
 							}
 							let url = earthquakeInfo[i]["URL"]
-							htmlText = htmlText + "<table id='"+id+"' onclick='' border=0 cellpadding='0px' style='background-color:" + color + "' class='earthquake_report'><tr><td rowspan=3><p style='color:white;font-size:60px ' align='left' >" + earthquakeInfo[i]["max_shindo"] + "</p></td><td colspan=2 ><h4 style='color:white' align='left'>" + earthquakeInfo[i]["epicenter"] + "</h4></td></tr><tr><td colspan=2 ><h6 style='color:white' align='left'>" + earthquakeInfo[i]["datetime"] + "</h6></td></tr>"; 
-							htmlText = htmlText + "<tr><td><h4 style='color:white' align='left'>" + earthquakeInfo[i]["magnitude"] + "</h4></td><td><h4 style='color:white' align='right'>"+earthquakeInfo[i]["depth"]+"</h4></td></tr>"
+							htmlText = htmlText + "<table id='"+id+"' onclick='' border=0 cellpadding='0px' style='background-color:" + color + "' class='earthquake_report'><tr><td rowspan=3><p style='color:white;font-size:60px ' align='left' >" + earthquakeInfo[i]["max_shindo"] + "</p></td><td colspan=2 ><strong><h4 style='color:white' align='left'>" + earthquakeInfo[i]["epicenter"] + "</strong></b></td></tr><tr><td colspan=2 ><h6 style='color:white' align='left'>" + earthquakeInfo[i]["datetime"] + "</h6></td></tr>"; 
+							htmlText = htmlText + "<tr><td><h4 style='color:white' align='left'><strong>" + earthquakeInfo[i]["magnitude"] + "</strong></h4></td><td><h4 style='color:white' align='right'>"+earthquakeInfo[i]["depth"]+"</h4></td></tr>"
 							htmlText = htmlText + '</table>';
 						}
 						if (htmlText!='')
@@ -1523,6 +1539,7 @@ function InfoUpdate()
 		function tw_eew_circle(){
 			//沒地震
 			if(eew_tw_id == ''){
+				EEW_TW_ing = false;
 				//震度色塊
 				eew_tw_shindo_list_layer.clearLayers();
 				//震波圓
@@ -1548,6 +1565,7 @@ function InfoUpdate()
 				}
 			//新地震
 			}else if(eew_tw_id != eew_tw_id_displayed){
+				EEW_TW_ing = false;
 				max_shindo_eew = "0"
 				console.log("新地震");
 				eew_tw_shindo_list = [];
@@ -1722,6 +1740,7 @@ function InfoUpdate()
 				eew_tw_version_displayed = eew_tw_version;
 			//更正報
 			}else if(eew_tw_version != '' &&  eew_tw_version != eew_tw_version_displayed ){
+				EEW_TW_ing = false;
 				//震波色塊
 				console.log("更正報");
 				eew_tw_shindo_list = [];
@@ -1861,6 +1880,7 @@ function InfoUpdate()
 				eew_tw_version_displayed = eew_tw_version;
 			//原地震原報更新
 			}else{
+				EEW_TW_ing = false;
 				//震波圓
 				let timestamp_now = Date.now()+ntpoffset_;//現在的timestamp
 				let elapsed = (timestamp_now - (eew_tw_timestamp)) / 1000;//timestamp差異
@@ -1905,6 +1925,7 @@ function InfoUpdate()
 								let name = pga_list[i]["name"];
 								let lat = parseFloat(pga_list[i]["lat"]);
 								let lon = parseFloat(pga_list[i]["lon"]);
+								let cname = pga_list[i]["cname"];
 								let pga = parseFloat(pga_list[i]["pga"]);
 								let shindo = pga_list[i]["shindo"];
 								let shindo_15 = pga_list[i]["shindo_15"];
@@ -1957,7 +1978,7 @@ function InfoUpdate()
 										stations[j][0].setLatLng([lat,lon]);
 										stations[j][2].setLatLng([lat,lon]);
 										displayed = true;
-										stations_displayed.push([stations[j][0].setTooltipContent("<div>"+name+"</div><div>PGA(原始):"+pga_origin.toString()+"</div><div>PGA(濾波):"+pga.toString()+"</div><div>震度:"+shindo_15+"</div>"),name,stations[j][2].setRadius(circleRadius)]);
+										stations_displayed.push([stations[j][0].setTooltipContent("<div>"+name+"</div><div>"+cname+"</div><div>PGA(原始):"+pga_origin.toString()+"</div><div>PGA(濾波):"+pga.toString()+"</div><div>震度:"+shindo_15+"</div>"),name,stations[j][2].setRadius(circleRadius)]);
 										stations.splice(j,1);
 									}
 								}
@@ -1969,7 +1990,7 @@ function InfoUpdate()
 									}
 									let cusicon = L.icon({iconUrl : iconURL,iconSize : [iconsizepx,iconsizepx],});
 									let position = L.latLng(lat,lon);
-									stations_displayed.push([new L.marker(position,{pane:panename,icon : cusicon,title : name,opacity : 1.0}).bindTooltip("<div>"+name+"</div><div>PGA(原始):"+pga_origin.toString()+"</div><div>PGA(濾波):"+pga.toString()+"</div><div>震度:"+shindo_15+"</div>",{offset:L.point(0, 8)}).addTo(map).on("click",function(e){
+									stations_displayed.push([new L.marker(position,{pane:panename,icon : cusicon,title : name,opacity : 1.0}).bindTooltip("<div>"+name+"</div><div>"+cname+"</div><div>PGA(原始):"+pga_origin.toString()+"</div><div>PGA(濾波):"+pga.toString()+"</div><div>震度:"+shindo_15+"</div>",{offset:L.point(0, 8)}).addTo(map).on("click",function(e){
 										let name = e.sourceTarget.options.title;
 										selected_station = name;
 										storage.setItem('selected_station',name);
@@ -1994,11 +2015,232 @@ function InfoUpdate()
 									RF_alert_list.push([name,shindo]);
 								}
 								//顯示最大震度
+								document.getElementById("max_shindo_img").innerHTML = "<img src='shindo_icon/selected/"+max_shindo+".png' style='width: 90px;height: 90px;'>";	
+							}
+							
+							
+							//音效
+							if((shindo2float(max_shindo) > shindo2float(max_Shindo_before)) && shakealert){
+								
+								if(max_shindo == "1" && enable_shindo_sounds_1 != "false"){//only for app/////////////////////////////////////////////////
+									aud1.play();
+								}else if(max_shindo == "2" && enable_shindo_sounds_2 != "false"){//only for app/////////////////////////////////////////////////
+									aud2.play();
+								}else if(max_shindo == "3" && enable_shindo_sounds_3 != "false"){//only for app/////////////////////////////////////////////////
+									aud3.play();
+								}else if(max_shindo == "4" && enable_shindo_sounds_4 != "false"){//only for app/////////////////////////////////////////////////
+									aud4.play();
+								}else if(max_shindo == "5-" && enable_shindo_sounds_5j != "false"){//only for app/////////////////////////////////////////////////
+									aud5j.play();
+								}else if(max_shindo == "5+" && enable_shindo_sounds_5k != "false"){//only for app/////////////////////////////////////////////////
+									aud5k.play();
+								}else if(max_shindo == "6-" && enable_shindo_sounds_6j != "false"){//only for app/////////////////////////////////////////////////
+									aud6j.play();
+								}else if(max_shindo == "6+" && enable_shindo_sounds_6k != "false"){//only for app/////////////////////////////////////////////////
+									aud6k.play();
+								}else if(max_shindo == "7" && enable_shindo_sounds_7 != "false"){//only for app/////////////////////////////////////////////////
+									aud7.play();
+								}
+								max_Shindo_before = max_shindo;
+							}
+							if(max_shindo == "0"){
+								max_Shindo_before = "0";
+							}
+							max_shindo = "0";
+							if(max_Shindo_before != "0"){
+								console.log("max_shindo:"+max_Shindo_before);
+							}
+						}
+						//刪除剩下圖標
+						for(j = 0;j < stations.length;j++){
+							console.log(stations_displayed);
+							console.log('刪除:');
+							map.removeLayer(stations[j][0]);
+							map.removeLayer(stations[j][2]);
+							stations.splice(j,1);
+						}
+						stations = stations_displayed;		
+						
+						
+						if(typeof(station_count) != "undefined"){
+							//let htmlText = "<p style='color:white'>目前共有" + station_count + "個測站上線</p>";
+							//document.getElementById('stations_count').innerHTML = htmlText.toString();
+							document.getElementById('stations_count_online').innerHTML = station_count.toString();
+						}
+					}else{
+						let htmlText = "<p style='color:white'>即時測站停用中</p>";
+						document.getElementById('stations_count').innerHTML = htmlText;
+					}
+				}else{
+					document.querySelector('.disconnected').style.display = "block";
+				}
+			}			
+		}
+		async function pgaupdate_async(){
+			var pgaInterval = setInterval(function(){
+				XHR3.open('GET','http://rexisstudio.tplinkdns.com:8787/PGA',false);
+				//http://rexisstudio.tplinkdns.com:8787/PGA
+				XHR3.send(null);
+				if(XHR3.status ==200){
+					document.querySelector('.disconnected').style.display = "none";
+					if(enable_shindo != "false"){//only for app///////////////////////////////////////////
+						var station_count = 0;
+						let stations_displayed = []
+						RF_alert_list = [];//清空觸發測站列表
+						let pga_list = XHR3.responseText;
+						let shakealert = false;
+						pga_list = JSON.parse(pga_list)
+						if(pga_list["shake_alert"]){
+							shakealert = true;
+						}
+						if(true){
+							pga_list = pga_list["data"];
+							for(i = 0;i < pga_list.length;i++){
+								let name = pga_list[i]["name"];
+								let lat = parseFloat(pga_list[i]["lat"]);
+								let lon = parseFloat(pga_list[i]["lon"]);
+								let cname = pga_list[i]["cname"];
+								let pga = parseFloat(pga_list[i]["pga"]);
+								let shindo = pga_list[i]["shindo"];
+								let shindo_15 = pga_list[i]["shindo_15"];
+								let pga_origin = parseFloat(pga_list[i]["pga_origin"]);
+								let timestamp = pga_list[i]["timestamp"];
+								let iconsizepx = 10;
+								let panename = "shindo_icon_0_0";
+								if (shindo_15 == '0' || !shakealert){
+
+									if (pga <= 1){
+										iconURL = 'shindo_icon/pga0.png';
+									}else if(pga <= 1.3){
+										iconURL = 'shindo_icon/pga1.png';
+										panename = "shindo_icon_0_1";
+									}else if(pga <=1.4 ){
+										iconURL = 'shindo_icon/pga2.png';
+										panename = "shindo_icon_0_2";
+									}else{
+										iconURL = 'shindo_icon/pga3.png';
+										panename = "shindo_icon_0_3";
+									}	
+								}else{
+									iconURL = 'shindo_icon/'+shindo_15+'.png';
+									panename = "shindo_icon_"+shindo_15;
+									iconsizepx = 20
+								}
+								//判斷測站是否離線
+								if(Math.abs((Date.now() + ntpoffset_) - timestamp) >= 5000){
+									pga = 0;
+									shindo = "0";
+									shindo_15 = "0";
+									pga_origin = 0;
+									iconURL = 'shindo_icon/disconnected.png';
+									panename = "shindo_icon_disconnected";
+									iconsizepx = 7
+								}else{
+									station_count++;
+								}
+								let displayed = false;
+								//更新圖標
+								for(j = 0;j < stations.length;j++){
+									if(stations[j][1] == name){
+										let circleRadius = 0;
+										if(shakealert && shindo_15 != '0' && shindo_15 != '1' && shindo_15 != '2' && enable_warningArea !='false'){
+										//if(1){
+											circleRadius = 20000;
+										}
+										let cusicon = L.icon({iconUrl : iconURL,iconSize : [iconsizepx,iconsizepx],});
+										stations[j][0].setIcon(cusicon);
+										stations[j][0].setLatLng([lat,lon]);
+										stations[j][2].setLatLng([lat,lon]);
+										displayed = true;
+										stations_displayed.push([stations[j][0].setTooltipContent("<div>"+name+"</div><div>"+cname+"</div><div>PGA(原始):"+pga_origin.toString()+"</div><div>PGA(濾波):"+pga.toString()+"</div><div>震度:"+shindo_15+"</div>"),name,stations[j][2].setRadius(circleRadius)]);
+										stations.splice(j,1);
+									}
+								}
+								//新增圖標
+								if(displayed == false){
+									let circleRadius = 0;
+									if(shakealert && shindo_15 != '0' && shindo_15 != '1' && shindo_15 != '2' && enable_warningArea !='false'){
+										circleRadius = 20000;
+									}
+									let cusicon = L.icon({iconUrl : iconURL,iconSize : [iconsizepx,iconsizepx],});
+									let position = L.latLng(lat,lon);
+									stations_displayed.push([new L.marker(position,{pane:panename,icon : cusicon,title : name,opacity : 1.0}).bindTooltip("<div>"+name+"</div><div>"+cname+"</div><div>PGA(原始):"+pga_origin.toString()+"</div><div>PGA(濾波):"+pga.toString()+"</div><div>震度:"+shindo_15+"</div>",{offset:L.point(0, 8)}).addTo(map).on("click",function(e){
+										let name = e.sourceTarget.options.title;
+										selected_station = name;
+										storage.setItem('selected_station',name);
+										document.getElementById("selected_name").innerHTML = name;
+									}),name,new L.circle(position,{radius:circleRadius,color:'white',fillOpacity:0}).addTo(map)]);
+									console.log('新增:'+name);
+								}
+								//檢查是否被選取
+								if(name == selected_station){
+									document.getElementById("selected_pgao").innerHTML = pga_origin;
+									document.getElementById("selected_pga").innerHTML = pga;
+									//document.getElementById("selected_magn").innerHTML = shindo.toString();
+									document.getElementById("selected_shindo").innerHTML = "<img src='shindo_icon/selected/"+shindo_15.toString()+".png' style='width:50px'>"
+								}
+								//檢查是否是最大震度
+								
+								if (shindo2float(shindo_15) > shindo2float(max_shindo)){
+									max_shindo = shindo_15;
+								}
+								//加入警報列表
+								if(shakealert && shindo_15 != '0' ){
+									RF_alert_list.push([cname,shindo]);
+								}
+								//顯示最大震度
 								document.getElementById("max_shindo_img").innerHTML = "<img src='shindo_icon/selected/"+max_shindo+".png' style='width: 90px;height: 90px;'>"	
 							}
-							if(RF_alert_list.length != 0){
-								
-							}
+							//顯示區域警報
+							//RF_alert_list = [["1","5+"],["2","5-"],["3","7"],["4","6+"],["5","4"],["6","1"],["7","2"]]
+							if(shakealert){
+								//篩選6個最大震度
+								RF_alert_list_display = [];
+								let RF_alert_list_length = RF_alert_list.length;
+								for(let j = 0;j < RF_alert_list_length;j++){
+									let max_i = 0;//最大值索引值
+									let max_v = 0;//最大值
+									for(let k = 0;k < RF_alert_list.length;k++){
+										if(shindo2float(RF_alert_list[k][1]) > max_v){
+											max_i = k;
+											max_v = shindo2float(RF_alert_list[k][1]);
+										}
+									}
+									RF_alert_list_display.push(RF_alert_list[max_i])
+									RF_alert_list.splice(max_i,1);
+									if(j == 5){
+										break;
+									}
+								}
+								console.log(RF_alert_list_display);
+								console.log("RF警報");
+								//變更顏色
+								if(shindo2float(max_shindo) >= 4){
+									document.querySelector(".RF_list").style.backgroundColor = "red";
+								}else{
+									document.querySelector(".RF_list").style.backgroundColor = "#E96D07";
+								}
+								//變更狀態
+								document.getElementById("RF_status").innerHTML = "搖晃檢知";
+								//變更padding
+								document.querySelector(".RF_list").style.paddingBottom = "5px";
+								document.querySelector(".RF_lists").style.padding = "5px";
+								for(let j = 0;j < RF_alert_list_display.length;j++){
+									document.getElementById("RF_item_" + (j+1).toString()).innerHTML = "<img src='shindo_icon/selected/"+RF_alert_list_display[j][1]+".png' height='30px'><h5 style='color: white;'>"+RF_alert_list_display[j][0]+"</h5>"
+									if(j == 5){
+										break;
+									}
+								}
+							}else{
+								console.log("RF未警報");
+								document.querySelector(".RF_list").style.backgroundColor = "#3c3c3c";
+								document.getElementById("RF_status").innerHTML = "目前沒有區域警報";
+								document.querySelector(".RF_list").style.paddingBottom = "0px";
+								document.querySelector(".RF_lists").style.padding = "0px";
+								for(let j = 0;j < 6;j++){
+									document.getElementById("RF_item_" + (j+1).toString()).innerHTML = "";
+								}
+							}				
 							//音效
 							if((shindo2float(max_shindo) > shindo2float(max_Shindo_before)) && shakealert){
 								
@@ -2053,9 +2295,8 @@ function InfoUpdate()
 				}else{
 					document.querySelector('.disconnected').style.display = "block";
 				}
-			}			
+			},1000);
 		}
-
 		async function wave_update(){
 			let XHR_wave = createXHR();	
 			var waveInterval = setInterval(function(){
@@ -2107,8 +2348,7 @@ function InfoUpdate()
 								
 					}
 				}
-				console.log(wave_list)
-				/*const canvas = document.getElementById("waveCanvas1");
+				const canvas = document.getElementById("waveCanvas1");
 				// 取得 2D 繪圖環境
 				const ctx = canvas.getContext("2d");
 				ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -2171,7 +2411,7 @@ function InfoUpdate()
 					ctx3.lineTo(j, wave_list[2]["wave"][j]["z"]+49);
 				}
 				// 繪製折線
-				ctx3.stroke();*/
+				ctx3.stroke();
 
 				
 			},600)
@@ -2415,12 +2655,12 @@ function InfoUpdate()
 				if(XHR_ver.status ==200)
 				{
 					let newver = XHR_ver.responseText;
-					let ver = "2.1.0";
+					let ver = "2.1.1";
 					newver = newver.substring(0, newver.length - 2);
 					console.log('最新版本:',newver)
 					console.log('目前版本:',ver)
 					if(newver != ver){
-						document.getElementById("ver").innerHTML = "<p style='color:white;position:absolute;right:0;bottom: 0;margin-bottom: 0;' onclick='downnewver()'>有新版本可用!請點擊此處下載更新版</p>";
+						document.getElementById("ver").innerHTML = "<p style='color:white;position:absolute;right:0;bottom: 0;margin-bottom: 0;' onclick='downnewver()'>點擊此處下載更新</p>";
 					}else{
 						document.getElementById("ver").innerHTML = "<p style='color:white;position:absolute;right:0;bottom: 0;margin-bottom: 0;'>目前為最新版本</p>";
 					}
@@ -2437,21 +2677,23 @@ function InfoUpdate()
 
 		//}
 		function ntp(){
-			XHR_ntp.open('GET','https://exptech.com.tw/api/v1/et/ntp',true);
-			XHR_ntp.onreadystatechange = ntpoffset;
-			XHR_ntp.send(null);
-		}
-		function ntpoffset(){
-			if(XHR_ntp.readyState == 4){
-				if(XHR_ntp.status ==200){
-					let ntpnum = XHR_ntp.responseText;
-					ntpnum = JSON.parse(ntpnum);
-					ntpnum = ntpnum["time"];
-					ntpoffset_ = ntpnum - Date.now();
-					console.log(ntpoffset_);
+			if(!EEW_TW_ing){
+				try{
+					XHR_ntp.open('GET','http://worldtimeapi.org/api/timezone/Asia/Taipei',false);
+					XHR_ntp.send(null);
+					if(XHR_ntp.status ==200){
+						let ntpnum = XHR_ntp.responseText;
+						ntpnum = JSON.parse(ntpnum);
+						ntpnum = ntpnum["unixtime"] * 1000;
+						ntpoffset_ = ntpnum - Date.now();
+						console.log(ntpoffset_);
+					}
+				}catch(e){
+					ntp();
 				}
-			}	
+			}
 		}
+		
 		function update()
 		{
 				if(count % 100 == 0){
@@ -2465,10 +2707,10 @@ function InfoUpdate()
 					XHR2.onreadystatechange = eewupdate;
 					XHR2.send(null);*/
 					//即時震度
-					XHR3.open('GET','http://rexisstudio.tplinkdns.com:8787/PGA',true);
+					//XHR3.open('GET','http://rexisstudio.tplinkdns.com:8787/PGA',true);
 					//http://rexisstudio.tplinkdns.com:8787/PGA
-					XHR3.onreadystatechange = pgaupdate;
-					XHR3.send(null);
+					//XHR3.onreadystatechange = pgaupdate;
+					//XHR3.send(null);
 					
 					//地震速報tw
 					//XHR4.open('GET','http://rexisstudio.tplinkdns.com:8080/cgi-bin/get_TWEEW.py',true);
@@ -2519,24 +2761,7 @@ function InfoUpdate()
 					count = 0;
 				}	
 		}
-		function switchPage(pageid){
-			let page2nav = {"page1":"nav_eew","page2":"nav_report","page3":"nav_weather"}
-			document.getElementById('page1').style.display = "none";
-			document.getElementById(page2nav['page1']).style.borderBottomColor = "#3C3C3C";
-			document.getElementById('page2').style.display = "none";
-			document.getElementById(page2nav['page2']).style.borderBottomColor = "#3C3C3C";
-			document.getElementById('page3').style.display = "none";
-			document.getElementById(page2nav['page3']).style.borderBottomColor = "#3C3C3C";
-			document.getElementById(pageid).style.display = "flex";
-			document.getElementById(page2nav[pageid]).style.borderBottomColor = "#00FFFF";
-			map.panTo([23.7, 120.924610]);
-			map.invalidateSize(true);
-			map2.panTo([23.7, 120.924610]);
-			map2.invalidateSize(true);
-			map3.panTo([23.7, 120.924610])
-			map3.invalidateSize(true);
-			
-		}
+		
 		function ws_connect(){
 			let socket = new WebSocket("ws://rexisstudio.tplinkdns.com:8788");//ws://rexisstudio.tplinkdns.com:8788
 			socket.onmessage = function(event) {
@@ -2567,9 +2792,15 @@ function InfoUpdate()
 				ws_connect();
 			}
 		}
+		ntp();
+		timeUpdate();
 		//即時波型
-		//wave_update();
-
+		if(enable_wave != "false"){
+			wave_update();
+		}else{
+			document.getElementById("wave").style.display = "none";
+		}
+		pgaupdate_async();
 		ws_connect();
 		
 		
