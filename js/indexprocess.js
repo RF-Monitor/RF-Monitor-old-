@@ -74,7 +74,7 @@ EEW_TW_ing = false;
 wave_list=[{id : id,wave : [{x : 1 , y : 1 , z : 1 , unixTimestamp : 1},{x : 1 , y : 1 , z : 1 , unixTimestamp : 1}]} , {id : id,wave : [{x : 1 , y : 1 , z : 1 , unixTimestamp : 1},{x : 1 , y : 1 , z : 1 , unixTimestamp : 1}]}]
 */ 
 //test only
-wave_list = [{'id':'6050_0012',wave : []},{'id':'6050_0011',wave : []},{'id':'6050_0007',wave : []},{'id':'6050_0003',wave : []}]
+wave_list = [{'id':'6050_0021',wave : [],'motion':'x'},{'id':'6050_0011',wave : [],'motion':'x'},{'id':'6050_0007',wave : [],'motion':'x'},{'id':'6050_0003',wave : [],'motion':'x'}]
 shindo_color = {
 	"1":"white",
 	"2":"#0066CC",
@@ -2086,7 +2086,7 @@ function InfoUpdate()
 					if(enable_shindo != "false"){//only for app///////////////////////////////////////////
 						var station_count = 0;
 						let stations_displayed = []
-						RF_alert_list = [];//清空觸發測站列表
+						let RF_alert_list = [];//清空觸發測站列表
 						let pga_list = XHR3.responseText;
 						let shakealert = false;
 						pga_list = JSON.parse(pga_list)
@@ -2186,7 +2186,7 @@ function InfoUpdate()
 								}
 								//加入警報列表
 								if(shakealert && shindo_15 != '0' ){
-									RF_alert_list.push([cname,shindo]);
+									RF_alert_list.push([cname,shindo_15]);
 								}
 								//顯示最大震度
 								document.getElementById("max_shindo_img").innerHTML = "<img src='shindo_icon/selected/"+max_shindo+".png' style='width: 90px;height: 90px;'>"	
@@ -2195,7 +2195,7 @@ function InfoUpdate()
 							//RF_alert_list = [["1","5+"],["2","5-"],["3","7"],["4","6+"],["5","4"],["6","1"],["7","2"]]
 							if(shakealert){
 								//篩選6個最大震度
-								RF_alert_list_display = [];
+								let RF_alert_list_display = [];
 								let RF_alert_list_length = RF_alert_list.length;
 								for(let j = 0;j < RF_alert_list_length;j++){
 									let max_i = 0;//最大值索引值
@@ -2232,7 +2232,6 @@ function InfoUpdate()
 									}
 								}
 							}else{
-								console.log("RF未警報");
 								document.querySelector(".RF_list").style.backgroundColor = "#3c3c3c";
 								document.getElementById("RF_status").innerHTML = "目前沒有區域警報";
 								document.querySelector(".RF_list").style.paddingBottom = "0px";
@@ -2240,7 +2239,7 @@ function InfoUpdate()
 								for(let j = 0;j < 6;j++){
 									document.getElementById("RF_item_" + (j+1).toString()).innerHTML = "";
 								}
-							}				
+							}			
 							//音效
 							if((shindo2float(max_shindo) > shindo2float(max_Shindo_before)) && shakealert){
 								
@@ -2361,10 +2360,10 @@ function InfoUpdate()
 				
 				// 定位折線的起點
 				ctx.beginPath();
-				ctx.moveTo(0, wave_list[0]["wave"][0]["z"]+49);
+				ctx.moveTo(0, wave_list[0]["wave"][0][wave_list[0]["motion"]]+49);
 				// 連接折線的所有點
 				for (let j = 1; j < wave_list[0]["wave"].length; j++) {
-					ctx.lineTo(j, wave_list[0]["wave"][j]["z"]+49);
+					ctx.lineTo(j, wave_list[0]["wave"][j][wave_list[0]["motion"]]+49);
 				}
 				// 繪製折線
 				ctx.stroke();
@@ -2383,10 +2382,10 @@ function InfoUpdate()
 				
 				// 定位折線的起點
 				ctx2.beginPath();
-				ctx2.moveTo(0, wave_list[1]["wave"][0]["z"]+49);
+				ctx2.moveTo(0, wave_list[1]["wave"][0][wave_list[1]["motion"]]+49);
 				// 連接折線的所有點
 				for (let j = 1; j < wave_list[1]["wave"].length; j++) {
-					ctx2.lineTo(j, wave_list[1]["wave"][j]["z"]+49);
+					ctx2.lineTo(j, wave_list[1]["wave"][j][wave_list[1]["motion"]]+49);
 				}
 				// 繪製折線
 				ctx2.stroke();
@@ -2405,10 +2404,10 @@ function InfoUpdate()
 				
 				// 定位折線的起點
 				ctx3.beginPath();
-				ctx3.moveTo(0, wave_list[2]["wave"][0]["z"]+49);
+				ctx3.moveTo(0, wave_list[2]["wave"][0][wave_list[2]["motion"]]+49);
 				// 連接折線的所有點
 				for (let j = 1; j < wave_list[2]["wave"].length; j++) {
-					ctx3.lineTo(j, wave_list[2]["wave"][j]["z"]+49);
+					ctx3.lineTo(j, wave_list[2]["wave"][j][wave_list[2]["motion"]]+49);
 				}
 				// 繪製折線
 				ctx3.stroke();
@@ -2689,7 +2688,7 @@ function InfoUpdate()
 						console.log(ntpoffset_);
 					}
 				}catch(e){
-					ntp();
+					setTimeout(() => {ntp()},1000)
 				}
 			}
 		}
