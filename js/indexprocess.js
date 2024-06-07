@@ -2453,7 +2453,7 @@ function InfoUpdate()
 									popupContent = popupContent + "<p>陸上強風特報</p>";
 								}
 								
-  								weather_warning_layers.addLayer(L.geoJSON(geojson_list[name], { color: "yellow",width:2,fillOpacity: 0 ,pane:"weather_warning_layers"}).bindPopup(popupContent));
+  								weather_warning_layers.addLayer(L.geoJSON(geojson_list[name], { color: "yellow",width:2,fillOpacity: 0.5 ,pane:"weather_warning_layers"}).bindPopup(popupContent));
 							}
 						}
 						
