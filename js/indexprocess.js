@@ -2043,7 +2043,7 @@ function InfoUpdate()
 								}
 							}else{
 								document.querySelector(".RF_list").style.backgroundColor = "#3c3c3c";
-								document.getElementById("RF_status").innerHTML = "目前沒有區域警報";
+								document.getElementById("RF_status").innerHTML = "目前沒有地震速報";
 								document.querySelector(".RF_list").style.paddingBottom = "0px";
 								document.querySelector(".RF_lists").style.padding = "0px";
 								for(let j = 0;j < 6;j++){
@@ -2453,7 +2453,7 @@ function InfoUpdate()
 									popupContent = popupContent + "<p>陸上強風特報</p>";
 								}
 								
-  								weather_warning_layers.addLayer(L.geoJSON(geojson_list[name], { color: "yellow",width:2,fillOpacity: 0 ,pane:"weather_warning_layers"}).bindPopup(popupContent));
+  								weather_warning_layers.addLayer(L.geoJSON(geojson_list[name], { color: "yellow",width:2,fillOpacity: 0.5 ,pane:"weather_warning_layers"}).bindPopup(popupContent));
 							}
 						}
 						
@@ -2579,7 +2579,7 @@ function InfoUpdate()
 				if(XHR_ver.status ==200)
 				{
 					let newver = XHR_ver.responseText;
-					let ver = "2.5.1";
+					let ver = "2.5.3";
 					//newver = newver.substring(0, newver.length - 2);
 					console.log('最新版本:',newver)
 					console.log('目前版本:',ver)
@@ -2596,7 +2596,7 @@ function InfoUpdate()
 			shell.openExternal(server_url+":8080/downloads/RF-monitor.exe");
 		}
 		function register_google(){
-			shell.openExternal("https://docs.google.com/forms/d/1d-m_NcCjl469SJIXN-HIoAjl2rKZAppejWTzzmAZHhI");
+			shell.openExternal("https://rfeqserver.myqnapcloud.com/RFEQservice/register.html");
 		}
 		//only for app/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		//function palert(){
